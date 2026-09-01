@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="L’association Les Panseurs est une structure artistique, culturelle et sociale engagée pour rendre l’art contemporain et les pratiques créatives accessibles à toutes et tous.">
+  <title>Association Les Panseurs — Art contemporain à Paris</title>
+  <style>
+    :root {
+      --background: #080808;
+      --foreground: #f1eee7;
+      --paper: #f1eee7;
+      --blue: #1742ff;
+      --red: #ff4b3e;
+      --line: rgb(241 238 231 / 24%);
+      --muted: #a7a59f;
+      --font-sans: Arial, Helvetica, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
+    a { color: inherit; }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 1rem 1.25rem;
+      background: rgb(8 8 8 / 88%);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .wordmark, .instagram-link, .site-header nav a {
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .site-header nav { display: flex; justify-content: center; gap: 1.6rem; }
+    .site-header a { transition: color 180ms ease; }
+    .site-header a:hover { color: var(--red); }
+
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      grid-template-rows: auto 1fr auto;
+      align-items: end;
+      gap: 2rem;
+      padding: 7rem 1.25rem 1.5rem;
+      background: radial-gradient(circle at 76% 28%, rgb(23 66 255 / 30%), transparent 33%), var(--background);
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      grid-column: 1 / -1;
+      align-self: start;
+      margin: 0;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+
+    h1 {
+      grid-column: 1 / -1;
+      margin: 0;
+      font-size: clamp(4rem, 16vw, 15rem);
+      font-weight: 900;
+      letter-spacing: -.09em;
+      line-height: .72;
+    }
+    h1 span { display: block; }
+    h1 span:last-child { color: var(--blue); }
+
+    .hero-copy {
+      max-width: 43rem;
+      margin: 0;
+      font-size: clamp(1.35rem, 2.4vw, 2.15rem);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+    }
+
+    .hero-facts { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
+    .hero-facts span {
+      padding: .52rem .72rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .section {
+      display: grid;
+      grid-template-columns: 4rem minmax(0, .72fr) minmax(0, 1.28fr);
+      column-gap: clamp(1.5rem, 4vw, 5rem);
+      padding: clamp(5rem, 10vw, 9rem) 1.25rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-index { font-size: .78rem; font-weight: 800; color: var(--red); }
+    .section-heading p {
+      margin: 0 0 1.5rem;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(3rem, 6.8vw, 7rem);
+      font-weight: 900;
+      letter-spacing: -.07em;
+      line-height: .82;
+      text-transform: uppercase;
+    }
+
+    .mission { min-height: 85svh; align-items: start; }
+    .mission-copy {
+      margin: 0;
+      font-size: clamp(1.55rem, 3vw, 3.15rem);
+      line-height: 1.13;
+      letter-spacing: -.045em;
+    }
+
+    .projects { grid-template-rows: auto auto auto auto; }
+    .projects-heading { grid-column: 2 / -1; margin-bottom: 5rem; }
+    .projects-heading h2 { max-width: 11ch; }
+    .project-card {
+      grid-column: 2 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(19rem, .72fr);
+      min-height: 44rem;
+      border: 1px solid var(--line);
+    }
+    .project-two { margin-top: 1.25rem; }
+    .project-copy { display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(2rem, 4vw, 4rem); }
+    .project-date { margin: 0 auto auto 0; color: var(--red); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .project-copy h3 { max-width: 13ch; margin: 0 0 2rem; font-size: clamp(2.5rem, 4.6vw, 5rem); font-weight: 900; letter-spacing: -.06em; line-height: .88; }
+    .project-copy > p:last-child { max-width: 42rem; margin: 0; font-size: 1.1rem; line-height: 1.55; color: #d2cfc8; }
+    .instagram-frame { min-height: 44rem; background: var(--paper); overflow: hidden; }
+    .instagram-frame iframe { display: block; width: 100%; height: 100%; min-height: 44rem; border: 0; }
+    .project-two .project-copy { background: var(--blue); }
+    .project-two .project-date { color: var(--paper); }
+    .work-in-progress { grid-column: 2 / -1; margin-top: 5rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+    .work-in-progress p, .donations-note p { margin: 0 0 1.5rem; color: var(--red); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .work-in-progress h3 { max-width: 20ch; margin: 0; font-size: clamp(2.5rem, 5vw, 5.5rem); font-weight: 900; letter-spacing: -.06em; line-height: .9; }
+
+    .finance { background: var(--paper); color: var(--background); }
+    .finance .section-index { color: var(--blue); }
+    .finance-heading { grid-column: 2 / -1; }
+    .finance-heading h2 { max-width: 13ch; }
+    .finance-intro { grid-column: 2 / -1; max-width: 62rem; margin: 4rem 0 7rem; font-size: clamp(1.3rem, 2.2vw, 2rem); line-height: 1.3; letter-spacing: -.025em; }
+    .budget-block { grid-column: 2 / -1; margin-bottom: 5rem; }
+    .budget-block h3, .board h3 { margin: 0 0 1.5rem; font-size: 1rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .table-wrap { width: 100%; overflow-x: auto; }
+    table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .98rem; }
+    th, td { padding: 1.1rem .8rem; border-top: 1px solid rgb(8 8 8 / 25%); text-align: left; vertical-align: top; }
+    th:nth-child(n+2), td:nth-child(n+2) { width: 9rem; text-align: right; white-space: nowrap; }
+    thead th { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+    tfoot th { border-top: 2px solid var(--background); font-weight: 900; }
+    .donations-note { grid-column: 2 / -1; margin-top: 1rem; padding: clamp(2rem, 4vw, 4rem); background: var(--blue); color: var(--paper); }
+    .donations-note p { color: var(--paper); }
+    .donations-note h3 { max-width: 40ch; margin: 0; font-size: clamp(1.35rem, 2.3vw, 2.3rem); line-height: 1.22; letter-spacing: -.03em; }
+
+    .official-heading, .contact-heading, .domain-heading { grid-column: 2 / -1; margin-bottom: 5rem; }
+    .official-heading h2, .contact-heading h2, .domain-heading h2 { max-width: 12ch; }
+    .legal-list, .domain-list { grid-column: 2 / -1; margin: 0; }
+    .legal-list > div, .domain-list > div { display: grid; grid-template-columns: minmax(12rem, .65fr) minmax(0, 1.35fr); gap: 2rem; padding: 1.5rem 0; border-top: 1px solid var(--line); }
+    dt { color: var(--muted); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    dd { margin: 0; font-size: 1.08rem; line-height: 1.45; }
+    dd a { display: inline-block; margin-top: .8rem; color: var(--red); font-weight: 800; text-underline-offset: .25rem; }
+    .board { grid-column: 2 / -1; margin-top: 6rem; }
+    .board ul { margin: 0; padding: 0; border-bottom: 1px solid var(--line); list-style: none; }
+    .board li { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 1.2rem 0; border-top: 1px solid var(--line); }
+    .board li strong { font-size: 1.25rem; }
+    .board li span { color: var(--muted); }
+
+    .contact { background: var(--red); color: var(--background); }
+    .contact .section-index { color: var(--background); }
+    .contact-grid { grid-column: 2 / -1; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgb(8 8 8 / 35%); }
+    .contact-grid > div { display: flex; flex-direction: column; gap: .65rem; min-height: 14rem; padding: 1.5rem; border-right: 1px solid rgb(8 8 8 / 35%); border-bottom: 1px solid rgb(8 8 8 / 35%); }
+    .contact-grid p { margin: 0 auto auto 0; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .contact-grid a { width: fit-content; font-size: clamp(1.15rem, 2vw, 2rem); font-weight: 900; letter-spacing: -.035em; text-decoration-thickness: 1px; text-underline-offset: .3rem; overflow-wrap: anywhere; }
+    .contact-grid span { font-size: .86rem; }
+    .contact-grid span a { font-size: inherit; font-weight: 700; letter-spacing: 0; }
+    .domain-list > div:last-child dd { max-width: 50rem; font-size: clamp(1.3rem, 2.25vw, 2rem); letter-spacing: -.025em; }
+
+    footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem 3rem;
+      align-items: end;
+      min-height: 56svh;
+      padding: clamp(4rem, 9vw, 8rem) 1.25rem 1.5rem;
+      background: var(--blue);
+    }
+    footer p { grid-column: 1 / -1; max-width: 9ch; margin: 0 auto auto 0; font-size: clamp(3.8rem, 10vw, 10rem); font-weight: 900; letter-spacing: -.08em; line-height: .78; }
+    footer a { width: fit-content; font-size: 1rem; font-weight: 800; text-underline-offset: .3rem; overflow-wrap: anywhere; }
+    footer span { grid-column: 1 / -1; padding-top: 1rem; border-top: 1px solid rgb(241 238 231 / 45%); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+    @media (max-width: 980px) {
+      .site-header { grid-template-columns: 1fr auto; }
+      .site-header nav { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { max-width: 100%; }
+      .hero-facts { align-items: flex-start; }
+      .section { grid-template-columns: 2.5rem 1fr; }
+      .section-heading, .projects-heading, .finance-heading, .official-heading, .contact-heading, .domain-heading, .mission-copy, .project-card, .work-in-progress, .finance-intro, .budget-block, .donations-note, .legal-list, .board, .contact-grid, .domain-list { grid-column: 2; }
+      .section-heading { margin-bottom: 4rem; }
+      .project-card { grid-template-columns: 1fr; }
+      .project-copy { min-height: 36rem; }
+      .instagram-frame, .instagram-frame iframe { min-height: 48rem; }
+    }
+
+    @media (max-width: 640px) {
+      .site-header { padding: .9rem 1rem; }
+      .hero { padding: 6.3rem 1rem 1.25rem; }
+      h1 { font-size: clamp(4rem, 23vw, 8rem); line-height: .78; }
+      .section { display: block; padding: 5rem 1rem; }
+      .section-index { margin-bottom: 2.5rem; }
+      .section-heading { margin-bottom: 3rem; }
+      h2 { font-size: clamp(2.9rem, 14vw, 5rem); }
+      .project-card { display: block; }
+      .project-copy { min-height: 34rem; padding: 1.5rem; }
+      .instagram-frame, .instagram-frame iframe { min-height: 42rem; }
+      .finance-intro { margin: 3rem 0 5rem; }
+      .legal-list > div, .domain-list > div, .board li { grid-template-columns: 1fr; gap: .8rem; }
+      .contact-grid { grid-template-columns: 1fr; }
+      footer { grid-template-columns: 1fr; padding-inline: 1rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main id="top">
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Association Les Panseurs, accueil">LES PANSEURS</a>
+      <nav aria-label="Navigation principale">
+        <a href="#mission">Mission</a>
+        <a href="#projets">Projets</a>
+        <a href="#transparence">Transparence</a>
+        <a href="#informations">Informations officielles</a>
+      </nav>
+      <a class="instagram-link" href="https://www.instagram.com/lespanseurs/" target="_blank" rel="noreferrer">Instagram ↗</a>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">ASSOCIATION LES PANSEURS</p>
+      <h1 id="hero-title"><span>LES</span><span>PANSEURS</span></h1>
+      <p class="hero-copy">L’association Les Panseurs est une structure artistique, culturelle et sociale engagée pour rendre l'art contemporain et les pratiques créatives accessibles à toutes et tous.</p>
+      <div class="hero-facts" aria-label="Informations principales">
+        <span>Association loi 1901 à but non lucratif</span>
+        <span>Paris 10e</span>
+        <span>lespanseurs.org</span>
+      </div>
+    </section>
+
+    <section class="mission section" id="mission" aria-labelledby="mission-title">
+      <div class="section-index">01</div>
+      <div class="section-heading">
+        <p>Notre Histoire, Mission &amp; Activités</p>
+        <h2 id="mission-title">Notre mission</h2>
+      </div>
+      <p class="mission-copy">L’association Les Panseurs est une structure artistique, culturelle et sociale engagée pour rendre l'art contemporain et les pratiques créatives accessibles à toutes et tous. Nous concevons des projets d'expositions immersives et pluridisciplinaires, mêlant arts plastiques, performances vivantes et ateliers de médiation sociale en lien direct avec le tissu associatif local.</p>
+    </section>
+
+    <section class="projects section" id="projets" aria-labelledby="projects-title">
+      <div class="section-index">02</div>
+      <div class="section-heading projects-heading">
+        <p>Notre Histoire, Mission &amp; Activités</p>
+        <h2 id="projects-title">Projets réalisés et accomplissements</h2>
+      </div>
+
+      <article class="project-card project-one">
+        <div class="project-copy">
+          <p class="project-date">Mai 2026</p>
+          <h3>Exposition « Home isn't always a place, is it ? »</h3>
+          <p>Organisée au Kiosque Citoyen (Paris 10e), cette première exposition interrogeait le sentiment du chez soi, à travers des créations plastiques et une scénographie immersive.</p>
+        </div>
+        <div class="instagram-frame">
+          <iframe src="https://www.instagram.com/p/DZX4mRVgLWJ/embed/captioned/" title="Photos de l’exposition Home isn't always a place, is it ?" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </article>
+
+      <article class="project-card project-two">
+        <div class="project-copy">
+          <p class="project-date">Juillet 2026</p>
+          <h3>Exposition-Évènement « Habiter son corps »</h3>
+          <p>À la Chapelle Saint-Lazare (Paris 10e), cet événement de 4 jours a réuni plus d'une dizaine d'artistes plasticiens, installations sensorielles interactives, diffusions sonores et performances vivantes (chant, live painting, drag show).</p>
+        </div>
+        <div class="instagram-frame">
+          <iframe src="https://www.instagram.com/lespanseurs/p/DbtA0QwCCMy/embed/captioned/" title="Photos de l’exposition Habiter son corps" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </article>
+
+      <div class="work-in-progress">
+        <p>Travail en cours</p>
+        <h3>Organisation de futures expositions thématiques et autres événements culturels et créatifs.</h3>
+      </div>
+    </section>
+
+    <section class="finance section" id="transparence" aria-labelledby="finance-title">
+      <div class="section-index">03</div>
+      <div class="section-heading finance-heading">
+        <p>Exercice 2026</p>
+        <h2 id="finance-title">Transparence financière &amp; Utilisation des fonds</h2>
+      </div>
+      <p class="finance-intro">L’intégralité des ressources collectées par Les Panseurs (dons via HelloAsso, contributions des membres et recettes solidaires) est directement réinvestie dans la production artistique, l'accueil des publics et les projets d'intérêt général.</p>
+
+      <div class="budget-block">
+        <h3>Synthèse budgétaire 2026</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Poste de Recettes / Ressources</th><th scope="col">Montant (€)</th><th scope="col">% du Total</th></tr></thead>
+            <tbody>
+              <tr><td>Dons des particuliers (HelloAsso &amp; directs)</td><td>2 150,00 €</td><td>92,5 %</td></tr>
+              <tr><td>Recettes solidaires (Buvette solidaire &amp; cartes)</td><td>113,45 €</td><td>4,9 %</td></tr>
+              <tr><td>Participations &amp; concours divers</td><td>60,00 €</td><td>2,6 %</td></tr>
+            </tbody>
+            <tfoot><tr><th scope="row">Total des ressources mobilisées</th><th>2 323,45 €</th><th>100,0 %</th></tr></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div class="budget-block">
+        <h3>Répartition des dépenses par action</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Affectation des dépenses</th><th scope="col">Montant (€)</th><th scope="col">% du Total</th></tr></thead>
+            <tbody>
+              <tr><td>Production &amp; Scénographie – Exposition Kiosque Citoyen</td><td>1 055,78 €</td><td>47,5 %</td></tr>
+              <tr><td>Production &amp; Événementiel – Exposition Chapelle Saint-Lazare</td><td>716,84 €</td><td>32,3 %</td></tr>
+              <tr><td>Frais de structure &amp; fonctionnement (Assurance MAIF, banque, outils web)</td><td>448,80 €</td><td>20,2 %</td></tr>
+            </tbody>
+            <tfoot><tr><th scope="row">Total des dépenses engagées</th><th>2 221,42 €</th><th>100,0 %</th></tr></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div class="donations-note">
+        <p>Suivi des dons &amp; Reçus fiscaux</p>
+        <h3>L'association tient un registre rigoureux de l'ensemble des dons perçus (22 dons enregistrés sur l'exercice 2026 pour un montant de 2 150 €) et émet des reçus fiscaux conformément à la réglementation pour assurer une parfaite transparence envers ses donateurs et les autorités.</h3>
+      </div>
+    </section>
+
+    <section class="official section" id="informations" aria-labelledby="official-title">
+      <div class="section-index">04</div>
+      <div class="section-heading official-heading">
+        <p>Association Les Panseurs</p>
+        <h2 id="official-title">Informations officielles &amp; Mentions légales</h2>
+      </div>
+      <dl class="legal-list">
+        <div><dt>Nom officiel de l'organisation</dt><dd>LES PANSEURS</dd></div>
+        <div><dt>Forme juridique</dt><dd>Association loi 1901 à but non lucratif</dd></div>
+        <div><dt>Numéro RNA</dt><dd>W751280345</dd></div>
+        <div><dt>Numéro SIREN</dt><dd>994 308 385</dd></div>
+        <div>
+          <dt>Déclaration officielle</dt>
+          <dd>Parution au Journal Officiel des Associations (JOAFE) et enregistrement en préfecture de police de Paris. <a href="https://drive.google.com/file/d/1VwDBhvpmW7VIqrwOr_qGUoAMX7jN8gX_/view?usp=drivesdk" target="_blank" rel="noreferrer">Déclaration officielle ↗</a></dd>
+        </div>
+        <div><dt>Siège social</dt><dd>4 boulevard Saint-Martin, 75010 Paris, France</dd></div>
+        <div><dt>Responsable légal</dt><dd>Rémi Fondin</dd></div>
+      </dl>
+
+      <div class="board">
+        <h3>Conseil d'Administration et Bureau de l'association</h3>
+        <ul>
+          <li><strong>Rémi Fondin</strong><span>Co-président &amp; Administrateur</span></li>
+          <li><strong>Héloïse Roueau</strong><span>Co-présidente &amp; Administratrice</span></li>
+          <li><strong>Léna Moreau</strong><span>Secrétaire, Trésorière &amp; Administratrice</span></li>
+          <li><strong>Tom Gauzieux</strong><span>Administrateur &amp; Membre du bureau</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="contact section" id="contact" aria-labelledby="contact-title">
+      <div class="section-index">05</div>
+      <div class="section-heading contact-heading">
+        <p>Association Les Panseurs</p>
+        <h2 id="contact-title">Coordonnées &amp; Contact officiel</h2>
+      </div>
+      <div class="contact-grid">
+        <div>
+          <p>Adresse e-mail du domaine</p>
+          <a href="mailto:remi.fondin@lespanseurs.org">remi.fondin@lespanseurs.org</a>
+          <span>contact général : <a href="mailto:contact.lespanseurs@gmail.com">contact.lespanseurs@gmail.com</a></span>
+        </div>
+        <div><p>Téléphone</p><a href="tel:+33617592852">06 17 59 28 52</a></div>
+        <div><p>Réseaux sociaux</p><a href="https://www.instagram.com/lespanseurs/" target="_blank" rel="noreferrer">Instagram @lespanseurs ↗</a></div>
+        <div><p>Nom de domaine officiel</p><a href="https://lespanseurs.org">lespanseurs.org</a><span>Enregistré auprès de Squarespace</span></div>
+      </div>
+    </section>
+
+    <section class="domain section" aria-labelledby="domain-title">
+      <div class="section-index">06</div>
+      <div class="section-heading domain-heading">
+        <p>Hébergement</p>
+        <h2 id="domain-title">Détails techniques du domaine &amp; Hébergement</h2>
+      </div>
+      <dl class="domain-list">
+        <div><dt>Nom de domaine</dt><dd>lespanseurs.org</dd></div>
+        <div><dt>Bureau d'enregistrement (Registrar)</dt><dd>Squarespace</dd></div>
+        <div>
+          <dt>Destination &amp; Usage</dt>
+          <dd>Site officiel de l'association LES PANSEURS pour la diffusion de ses activités d'intérêt général, la communication avec ses bénévoles, artistes et adhérents, et la promotion d'événements culturels accessibles à tous.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <footer>
+      <p>ASSOCIATION LES PANSEURS</p>
+      <a href="https://lespanseurs.org">lespanseurs.org ↗</a>
+      <a href="mailto:remi.fondin@lespanseurs.org">remi.fondin@lespanseurs.org</a>
+      <span>Association loi 1901 à but non lucratif · Paris, France</span>
+    </footer>
+  </main>
+</body>
+</html>
