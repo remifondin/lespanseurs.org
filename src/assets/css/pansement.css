@@ -443,9 +443,8 @@ table {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(2rem, 6vh, 4rem);
-  padding: 6rem var(--marge) var(--marge);
+  gap: clamp(1.5rem, 6vh, 4rem);
+  padding: 5.5rem var(--marge) var(--marge);
   background: var(--noir);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -477,7 +476,11 @@ table {
   }
 }
 
+/* Centré quand il y a la place, collé en haut sinon : `justify-content:
+   center` rendrait le haut de la liste inatteignable dès que le sommaire
+   dépasse la hauteur de l'écran. */
 .sommaire__nav {
+  margin-block: auto;
   position: relative;
   display: flex;
   flex-direction: column;
