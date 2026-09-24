@@ -68,10 +68,10 @@ Il n'y a rien à faire : tout envoi sur la branche `main` déclenche la
 reconstruction et la mise en ligne (`.github/workflows/deploy.yml`). L'onglet
 **Actions** du dépôt montre l'avancement et signale une éventuelle erreur.
 
-> **Réglage à faire une seule fois** — dans *Settings → Pages* du dépôt, la
-> source doit être **GitHub Actions** et non « Deploy from a branch ». Le nom de
-> domaine `lespanseurs.org` reste inchangé : il est porté par le fichier `CNAME`,
-> recopié à chaque construction.
+> La source de publication (*Settings → Pages*) est **GitHub Actions** : elle a
+> basculé toute seule au premier passage du workflow, l'ancienne publication par
+> branche ne tourne plus. Le nom de domaine `lespanseurs.org` est inchangé : il
+> est porté par le fichier `CNAME`, recopié à chaque construction.
 
 ## Comment c'est fait
 
