@@ -1,0 +1,90 @@
+---
+layout: layouts/base.njk
+permalink: /
+titre: false
+description: "Les Panseurs, association loi 1901 : expositions d'art contemporain pluridisciplinaires et ateliers de médiation avec les publics éloignés de l'offre culturelle."
+---
+{% from "partials/photo.njk" import cliche with context %}
+
+<section class="ouverture">
+  <div class="ouverture__plaque">
+    <h1 class="titre-panse">
+      <span class="titre-panse__ligne">L’Art</span>
+      <span class="titre-panse__ligne">Contemporain</span>
+      <span class="titre-panse__ligne titre-panse__ligne--accent">Accessible</span>
+      <span class="titre-panse__ligne">à Tous.</span>
+    </h1>
+
+    <div class="bandelettes" aria-hidden="true">
+      <i class="bandelette" style="--y: 16%; --h: 9%; --x: -6%; --r: -.7deg; --retard: 0ms"></i>
+      <i class="bandelette bandelette--sang" style="--y: 41%; --h: 5%; --x: 22%; --r: .5deg; --retard: 90ms"></i>
+      <i class="bandelette" style="--y: 63%; --h: 7%; --x: -14%; --r: .4deg; --retard: 180ms"></i>
+      <i class="bandelette bandelette--iode" style="--y: 82%; --h: 4%; --x: 8%; --r: -.3deg; --retard: 270ms"></i>
+    </div>
+  </div>
+
+  <p class="ouverture__accroche">{{ site.accroche }}</p>
+
+  <p class="ouverture__indice" aria-hidden="true">Défiler — ou décoller le sommaire</p>
+</section>
+
+<section class="strate strate--geste" aria-labelledby="t-geste">
+  <h2 class="strate__titre" id="t-geste">Panser, penser</h2>
+  <div class="geste">
+    <p class="geste__enonce">L'art ne doit pas être réservé aux seules institutions.</p>
+    <p class="geste__enonce">Un art de proximité, immersif, qui interroge directement notre rapport au monde, au corps et à notre intimité.</p>
+    <p class="geste__enonce">Chaque exposition s'accompagne d'un programme d'ateliers de médiation sociale.</p>
+  </div>
+  <p class="strate__suite"><a class="lien-bande" href="/a-propos.html">Notre mission en entier</a></p>
+</section>
+
+<section class="strate strate--apercu" aria-labelledby="t-apercu">
+  <h2 class="strate__titre" id="t-apercu">Ce que nous avons fait</h2>
+
+  <ol class="apercu">
+    {%- for projet in projets %}
+    <li class="apercu__item">
+      <a class="apercu__lien" href="/projets.html#{{ projet.photo }}">
+        {{ cliche(projet.photo, projet.alt, "(min-width: 60rem) 44vw, 92vw") }}
+        <span class="apercu__meta">{{ projet.date }} — {{ projet.lieu }}</span>
+        <span class="apercu__titre">{{ projet.titre }}</span>
+        <span class="apercu__chapo">{{ projet.chapo }}</span>
+      </a>
+    </li>
+    {%- endfor %}
+  </ol>
+
+  <p class="strate__suite"><a class="lien-bande" href="/projets.html">Les projets et les programmes</a></p>
+</section>
+
+{%- set totalRecettes = finances.recettes.lignes | somme -%}
+{%- set totalDepenses = finances.depenses.lignes | somme -%}
+
+<section class="strate strate--compte" aria-labelledby="t-compte">
+  <h2 class="strate__titre" id="t-compte">Ce que ça coûte</h2>
+
+  <dl class="compte">
+    <div class="compte__poste">
+      <dt>Ressources mobilisées en {{ finances.annee }}</dt>
+      <dd>{{ totalRecettes | euros }}</dd>
+    </div>
+    <div class="compte__poste">
+      <dt>Dépenses engagées en {{ finances.annee }}</dt>
+      <dd>{{ totalDepenses | euros }}</dd>
+    </div>
+    <div class="compte__poste">
+      <dt>Dons enregistrés</dt>
+      <dd>{{ finances.dons }}</dd>
+    </div>
+  </dl>
+
+  <p class="compte__note">{{ finances.chapo }}</p>
+  <p class="strate__suite"><a class="lien-bande" href="/transparence.html">Le détail, ligne par ligne</a></p>
+</section>
+
+<section class="strate strate--appel" aria-labelledby="t-appel">
+  <h2 class="strate__titre" id="t-appel">Écrivez-nous</h2>
+  <p class="appel__texte">Pour toute demande d'information, partenariat ou projet de médiation culturelle.</p>
+  <p class="appel__adresse"><a href="mailto:{{ site.emails.administration }}">{{ site.emails.administration }}</a></p>
+  <p class="strate__suite"><a class="lien-bande" href="/contact.html">Tous les moyens de nous joindre</a></p>
+</section>

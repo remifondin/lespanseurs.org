@@ -1,0 +1,43 @@
+---
+layout: layouts/base.njk
+permalink: /projets.html
+titre: Projets & Programmes
+description: "Les expositions des Panseurs : « Home isn’t always a place, is it ? » au Kiosque Citoyen et « Habiter son corps » à la Chapelle Saint-Lazare, Paris 10ᵉ."
+---
+{% from "partials/photo.njk" import cliche with context %}
+
+<section class="entree" aria-labelledby="t-page">
+  <p class="entree__num" aria-hidden="true">03</p>
+  <h1 class="entree__titre" id="t-page">Nos Projets<br>&amp; Programmes</h1>
+  <p class="entree__chapo">Découvrez les réalisations de l'association et le travail que nous menons actuellement sur le terrain.</p>
+  <div class="bandelettes bandelettes--entree" aria-hidden="true">
+    <i class="bandelette bandelette--sang" style="--y: 36%; --h: 6%; --x: 18%; --r: .5deg; --retard: 0ms"></i>
+    <i class="bandelette" style="--y: 72%; --h: 9%; --x: -12%; --r: -.5deg; --retard: 120ms"></i>
+  </div>
+</section>
+
+{%- for projet in projets %}
+<article class="dossier" id="{{ projet.photo }}" aria-labelledby="t-{{ projet.photo }}">
+  <div class="dossier__fiche">
+    <p class="dossier__num" aria-hidden="true">{{ projet.num }}</p>
+    <p class="dossier__surtitre">{{ projet.surtitre }} — <time datetime="{{ projet.datetime }}">{{ projet.date }}</time></p>
+    <h2 class="dossier__titre" id="t-{{ projet.photo }}">{{ projet.titre }}</h2>
+    <p class="dossier__lieu">{{ projet.lieu }}</p>
+    <p class="dossier__chapo">{{ projet.chapo }}</p>
+    <p class="dossier__texte">{{ projet.texte }}</p>
+    <ul class="etiquettes">
+      {%- for mot in projet.mots %}
+      <li>{{ mot }}</li>
+      {%- endfor %}
+    </ul>
+  </div>
+
+  <div class="dossier__image">
+    {{ cliche(projet.photo, projet.alt, "(min-width: 60rem) 52vw, 96vw") }}
+  </div>
+</article>
+{%- endfor %}
+
+<section class="strate strate--suite-projets">
+  <p class="strate__suite"><a class="lien-bande" href="/transparence.html">Ce que ces projets ont coûté</a></p>
+</section>

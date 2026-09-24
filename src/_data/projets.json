@@ -1,0 +1,28 @@
+[
+  {
+    "num": "01",
+    "date": "Mai 2026",
+    "datetime": "2026-05",
+    "titre": "Home isn’t always a place, is it ?",
+    "surtitre": "Exposition",
+    "lieu": "Kiosque Citoyen, Paris 10ᵉ",
+    "photo": "expo-kiosque",
+    "alt": "Visiteuses feuilletant le livret rouge de l’exposition devant le mur de tirages, au Kiosque Citoyen.",
+    "chapo": "Interroger le sentiment du chez-soi.",
+    "texte": "Organisée au Kiosque Citoyen (Paris 10ᵉ), cette première exposition interrogeait le sentiment du chez soi, à travers des créations plastiques et une scénographie immersive. Des ateliers spécifiques ont été menés avec les accueils de jour partenaires.",
+    "mots": ["Arts plastiques", "Scénographie immersive", "Ateliers accueils de jour"]
+  },
+  {
+    "num": "02",
+    "date": "Juillet 2026",
+    "datetime": "2026-07",
+    "titre": "Habiter son corps",
+    "surtitre": "Exposition-évènement",
+    "lieu": "Chapelle Saint-Lazare, Paris 10ᵉ",
+    "photo": "expo-chapelle",
+    "alt": "Vue plongeante sur le public allongé et assis sur des coussins rouges pendant une performance à la Chapelle Saint-Lazare.",
+    "chapo": "Quatre jours, une dizaine d’artistes, un corps collectif.",
+    "texte": "À la Chapelle Saint-Lazare (Paris 10ᵉ), cet événement de 4 jours a réuni plus d'une dizaine d'artistes plasticiens, installations sensorielles interactives, diffusions sonores et performances vivantes (chant, live painting, drag show). Des visites dédiées ont été organisées pour des publics spécifiques de l'association France Alzheimer.",
+    "mots": ["Installations sensorielles", "Performances vivantes", "Visites France Alzheimer"]
+  }
+]

@@ -1,0 +1,32 @@
+<footer class="pied">
+  <div class="pied__haut">
+    <div class="pied__identite">
+      <h2 class="pied__nom">Association<br>Les Panseurs</h2>
+      <a class="pied__mail" href="mailto:{{ site.emails.administration }}">{{ site.emails.administration }}</a>
+    </div>
+
+    <nav class="pied__nav" aria-label="Navigation de pied de page">
+      <h3>Navigation</h3>
+      <ul>
+        {%- for lien in nav %}
+        <li><a href="{{ lien.url }}"{% if page.url == lien.url %} aria-current="page"{% endif %}>{{ lien.titre }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+
+    <div class="pied__joindre">
+      <h3>Nous joindre</h3>
+      <ul>
+        <li><a href="mailto:{{ site.emails.general }}">{{ site.emails.general }}</a></li>
+        <li><a href="tel:{{ site.telephoneLien }}">{{ site.telephone }}</a></li>
+        <li><a href="{{ site.instagram.url }}" rel="noopener">Instagram {{ site.instagram.pseudo }}<span aria-hidden="true"> ↗</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pied__legal">
+    <span>Nom officiel : {{ site.nomLegal }} | {{ site.legal.forme }}</span>
+    <span>RNA : {{ site.legal.rna }} | SIREN : {{ site.legal.siren }} | Siège social : {{ site.legal.adresseCourte }}</span>
+    <span>Le domaine officiel exclusif de l'association est {{ site.domaine }}, enregistré via {{ site.registrar }}.</span>
+  </div>
+</footer>

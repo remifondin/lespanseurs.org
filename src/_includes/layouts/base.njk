@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if titre %}{{ titre }} — {{ site.nom }}{% else %}{{ site.nom }}{% endif %}</title>
+<meta name="description" content="{{ description or site.description }}">
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.nom }}">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="{% if titre %}{{ titre }} — {{ site.nom }}{% else %}{{ site.nom }}{% endif %}">
+<meta property="og:description" content="{{ description or site.description }}">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta property="og:image" content="{{ site.url }}/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="theme-color" content="#080808">
+
+<link rel="stylesheet" href="/assets/css/pansement.css">
+<link rel="alternate" type="application/xml" href="/sitemap.xml">
+
+<!-- Marque la présence de JavaScript avant le premier rendu : les effets de
+     décollement ne s'appliquent que si l'on est capable de les défaire. -->
+<script>document.documentElement.classList.add('js')</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  "name": "{{ site.nomLegal }}",
+  "alternateName": "{{ site.nom }}",
+  "url": "{{ site.url }}",
+  "email": "{{ site.emails.administration }}",
+  "telephone": "{{ site.telephoneLien }}",
+  "description": "{{ site.description }}",
+  "sameAs": ["{{ site.instagram.url }}"],
+  "identifier": [
+    { "@type": "PropertyValue", "name": "RNA", "value": "{{ site.legal.rna }}" },
+    { "@type": "PropertyValue", "name": "SIREN", "value": "{{ site.legal.siren }}" }
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "4 boulevard Saint-Martin",
+    "postalCode": "75010",
+    "addressLocality": "Paris",
+    "addressCountry": "FR"
+  }
+}
+</script>
+</head>
+
+<body data-page="{{ page.fileSlug or 'accueil' }}">
+
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+{% include "partials/header.njk" %}
+
+<main id="contenu">
+  {{ content | safe }}
+</main>
+
+{% include "partials/footer.njk" %}
+
+<div class="grain" aria-hidden="true"></div>
+
+<script src="/assets/js/pansement.js" type="module"></script>
+</body>
+</html>

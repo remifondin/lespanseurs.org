@@ -1,0 +1,21 @@
+{
+  "expo-kiosque": {
+    "width": 6048,
+    "height": 4032,
+    "widths": [
+      480,
+      960,
+      1440,
+      1920
+    ],
+    "lqip": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAABQBACdASoUAA0APu1iqU2ppaOiMAgBMB2JaACdAYv07dfFUVWdCWyKCmpgAPjjLps+Iyk6hFLvhgBAtPBYypYTwxq3ZUSW3ka3w004Urw2+W+wu0BSAyvv6zjbZFolHuuTVnjfX7GJm+AAEOxHm+wLQMmeEbGP8xjL6jIVWTfMhLk6xjgvILrtiUwKZ9Qakaj9A0f/Z4xjKwAA"
+  },
+  "expo-chapelle": {
+    "width": 733,
+    "height": 933,
+    "widths": [
+      480
+    ],
+    "lqip": "data:image/webp;base64,UklGRg4BAABXRUJQVlA4IAIBAADwBQCdASoUABkAPu1sq1EppaOiqAqpMB2JZACdEf/i1/zit70ju7uQgCSbZ3Jv5o/xczWPNM6yAAD+4f+CdJMP0+IdLl0i3nmCDeTUTd7GDDxYtYKrdN/Ifb2oiA2+lMCA0OaX/gNzxW2knLMk5mzhtXku06+dn/UKK8jkFFfXrT7JakuDbhd8he+egNzmk5leqnNtrfPwcUao4UTHjx9gUK6Y/9Fcw6MdKsEe7t1yPZ29gg5c9Z0s8xaOUAyjKgtYnv9eRGNiBhnLPoIoTuxOEp57gEfeIkN72fZ+u8gff+FIpJ461PJubsE+q88crqoQeSR7fYKJFlWOuwdnbvow4AA="
+  }
+}

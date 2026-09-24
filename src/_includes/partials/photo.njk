@@ -1,0 +1,22 @@
+{#
+  Rend une photo en AVIF / WebP / JPEG, avec toutes les largeurs disponibles et
+  la vignette floutée en attendant le chargement.
+  Les dimensions viennent de `src/_data/photos.json`, généré par `npm run images`.
+#}
+{% macro cliche(nom, alt, tailles = "(min-width: 60rem) 46rem, 92vw", chargement = "lazy") %}
+{%- set p = photos[nom] -%}
+<picture class="cliche">
+  <source type="image/avif" sizes="{{ tailles }}"
+    srcset="{% for w in p.widths %}/assets/img/{{ nom }}-{{ w }}.avif {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}">
+  <source type="image/webp" sizes="{{ tailles }}"
+    srcset="{% for w in p.widths %}/assets/img/{{ nom }}-{{ w }}.webp {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}">
+  <img class="cliche__img"
+    src="/assets/img/{{ nom }}-{{ p.widths | last }}.jpg"
+    sizes="{{ tailles }}"
+    srcset="{% for w in p.widths %}/assets/img/{{ nom }}-{{ w }}.jpg {{ w }}w{% if not loop.last %}, {% endif %}{% endfor %}"
+    width="{{ p.width }}" height="{{ p.height }}"
+    alt="{{ alt }}"
+    loading="{{ chargement }}" decoding="async"
+    style="background-image: url({{ p.lqip }})">
+</picture>
+{% endmacro %}

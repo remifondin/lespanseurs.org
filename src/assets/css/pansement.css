@@ -1,0 +1,1547 @@
+/* =========================================================================
+   LES PANSEURS — « Le Pansement »
+   -------------------------------------------------------------------------
+   Le site est une plaie que l'on panse. Le fond est un corps noir ; les
+   contenus sont posés dessus comme des bandes de gaze. Les bandelettes qui
+   traversent les titres sont en `mix-blend-mode: difference` : là où elles
+   croisent une lettre claire, la lettre s'inverse et paraît imprimée sur le
+   pansement.
+
+   Sommaire
+     01  Jetons
+     02  Socle
+     03  Grain
+     04  Bandelettes
+     05  En-tête & sommaire déroulé
+     06  Strates (l'apparition au défilement)
+     07  Ouverture (accueil)
+     08  Entrées de page
+     09  Blocs de contenu
+     10  Radiographie budgétaire
+     11  Pied de page
+     12  Transitions de page
+     13  Retraits (mouvement réduit, contraste forcé, impression)
+   ========================================================================= */
+
+/* == 01  Jetons ========================================================== */
+
+:root {
+  /* Corps & pansement */
+  --noir: #080808;
+  --gaze: #f1eee7;
+  --gaze-ombre: #e0dacb;
+
+  /* Teintures.
+     Contrastes mesurés, pas estimés :
+       --iode        sur noir  3,11:1  → aplats et graphismes uniquement
+       --iode-clair  sur noir  5,33:1  → texte
+       --sang        sur noir  6,03:1  → texte
+       --sang-sombre sur gaze  5,02:1  → texte sur fond clair
+       --iode        sur gaze  5,56:1  → texte sur fond clair */
+  --iode: #1742ff;
+  --iode-clair: #5c78ff;
+  --sang: #ff4b3e;
+  --sang-sombre: #c42418;
+
+  /* Encres */
+  --encre: var(--gaze);
+  --encre-faible: #a7a59f;
+  --encre-sur-gaze: var(--noir);
+  --encre-faible-sur-gaze: #5a5449;
+  --filet: rgb(241 238 231 / 22%);
+  --filet-sur-gaze: rgb(8 8 8 / 18%);
+
+  /* Fontes — le grotesque le plus neutre possible, poussé à l'extrême.
+     Pour basculer sur une fonte maison plus tard, il suffit de remplacer
+     --fonte-titre ici : rien d'autre ne bouge dans la feuille. */
+  --fonte-titre: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --fonte-texte: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --fonte-registre: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Rythme */
+  --marge: clamp(1.1rem, 4vw, 4rem);
+  --large: 78rem;
+  --colonne: 42rem;
+  --souffle: clamp(4.5rem, 12vh, 10rem);
+
+  /* Courbes */
+  --pose: cubic-bezier(0.76, 0, 0.24, 1);
+  --glisse: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: dark;
+}
+
+/* == 02  Socle =========================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--noir);
+  color: var(--encre);
+  font-family: var(--fonte-texte);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  line-height: 1.55;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+body.est-bloque {
+  overflow: hidden;
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--sang);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--sang);
+  color: var(--noir);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fonte-titre);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 0.88;
+  text-transform: uppercase;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+ul,
+ol,
+dl {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.visuellement-cache {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.evitement {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 1rem 1.4rem;
+  background: var(--sang);
+  color: var(--noir);
+  font-family: var(--fonte-registre);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transform: translateY(-120%);
+  transition: transform 180ms var(--pose);
+}
+
+.evitement:focus {
+  transform: translateY(0);
+}
+
+/* == 03  Grain =========================================================== */
+
+/* Une trame de bruit fixe sur le viewport : le papier du pansement. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23b)'/%3E%3C/svg%3E");
+}
+
+/* == 04  Bandelettes ===================================================== */
+
+.bandelettes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.bandelette {
+  position: absolute;
+  left: var(--x, 0%);
+  top: var(--y, 50%);
+  width: 140%;
+  height: var(--h, 8%);
+  background: var(--gaze);
+  mix-blend-mode: difference;
+  transform: rotate(var(--r, 0deg));
+  /* Les extrémités s'effilochent comme une bande coupée aux ciseaux. */
+  mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%);
+}
+
+/* Le tissage de la gaze. */
+.bandelette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 13%) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 9%) 0 1px, transparent 1px 7px);
+}
+
+.bandelette--sang {
+  background: var(--sang);
+}
+
+.bandelette--iode {
+  background: var(--iode);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bandelette {
+    animation: poser 1100ms var(--pose) both;
+    animation-delay: var(--retard, 0ms);
+  }
+
+  @keyframes poser {
+    from {
+      transform: rotate(var(--r, 0deg)) translate3d(-115%, 0, 0);
+    }
+    to {
+      transform: rotate(var(--r, 0deg)) translate3d(0, 0, 0);
+    }
+  }
+}
+
+/* == 05  En-tête & sommaire déroulé ====================================== */
+
+.entete {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--marge);
+  padding: 0.85rem var(--marge);
+  border-bottom: 1px solid var(--filet);
+}
+
+/* Le flou est porté par un pseudo-élément, pas par l'en-tête lui-même :
+   un `backdrop-filter` fait de son élément le bloc conteneur de ses enfants
+   `position: fixed`, ce qui enfermerait le sommaire déroulé dans la barre. */
+.entete::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(8 8 8 / 82%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.marque {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 0.28em;
+  font-family: var(--fonte-titre);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  view-transition-name: marque;
+}
+
+/* « Panseurs » porte une bandelette qui se serre au survol. */
+.marque__mot--panse {
+  position: relative;
+}
+
+.marque__mot--panse::after {
+  content: "";
+  position: absolute;
+  left: -0.1em;
+  right: -0.1em;
+  top: 50%;
+  height: 0.34em;
+  translate: 0 -50%;
+  background: var(--sang);
+  mix-blend-mode: difference;
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 340ms var(--glisse);
+}
+
+.marque:hover .marque__mot--panse::after,
+.marque:focus-visible .marque__mot--panse::after {
+  scale: 1 1;
+}
+
+.entete__liens {
+  display: none;
+  margin-inline-start: auto;
+  gap: 1.5rem;
+}
+
+.entete__liens a {
+  font-family: var(--fonte-registre);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--encre-faible);
+  transition: color 180ms;
+}
+
+.entete__liens a:hover {
+  color: var(--gaze);
+}
+
+.entete__liens a[aria-current="page"] {
+  color: var(--sang);
+}
+
+@media (min-width: 60rem) {
+  .entete__liens {
+    display: flex;
+  }
+}
+
+/* -- Le sommaire : une bande que l'on déroule sur tout l'écran ----------- */
+
+.sommaire {
+  margin-inline-start: auto;
+}
+
+@media (min-width: 60rem) {
+  .sommaire {
+    margin-inline-start: 0;
+  }
+}
+
+.sommaire__bouton {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  font-family: var(--fonte-registre);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.sommaire__bouton::-webkit-details-marker {
+  display: none;
+}
+
+.sommaire__mot--ouvert,
+.sommaire[open] .sommaire__mot--ferme {
+  display: none;
+}
+
+.sommaire[open] .sommaire__mot--ouvert {
+  display: inline;
+}
+
+/* Trois traits empilés = une bande roulée ; ouverts = une bande à plat. */
+.sommaire__trait,
+.sommaire__trait::before,
+.sommaire__trait::after {
+  display: block;
+  width: 1.6rem;
+  height: 2px;
+  background: currentColor;
+  transition: transform 320ms var(--pose), opacity 200ms;
+}
+
+.sommaire__trait {
+  position: relative;
+}
+
+.sommaire__trait::before,
+.sommaire__trait::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.sommaire__trait::before {
+  top: -6px;
+}
+
+.sommaire__trait::after {
+  top: 6px;
+}
+
+.sommaire[open] .sommaire__trait {
+  background: transparent;
+}
+
+.sommaire[open] .sommaire__trait::before {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.sommaire[open] .sommaire__trait::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.sommaire__panneau {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2rem, 6vh, 4rem);
+  padding: 6rem var(--marge) var(--marge);
+  background: var(--noir);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* La bande de gaze qui tapisse le fond du sommaire. */
+.sommaire__panneau::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgb(241 238 231 / 5%) 0 1px, transparent 1px 7px),
+    radial-gradient(120% 90% at 82% 8%, rgb(23 66 255 / 22%), transparent 60%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sommaire[open] .sommaire__panneau {
+    animation: derouler 460ms var(--pose) both;
+  }
+
+  @keyframes derouler {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
+
+.sommaire__nav {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--large);
+  margin-inline: auto;
+  width: 100%;
+}
+
+.sommaire__lien {
+  display: flex;
+  align-items: start;
+  gap: clamp(0.8rem, 3vw, 2.5rem);
+  padding: clamp(0.5rem, 1.6vh, 1.1rem) 0;
+  border-top: 1px solid var(--filet);
+  text-decoration: none;
+  isolation: isolate;
+}
+
+.sommaire__lien:last-child {
+  border-bottom: 1px solid var(--filet);
+}
+
+.sommaire__num {
+  padding-top: 0.55em;
+  font-family: var(--fonte-registre);
+  font-size: 0.78rem;
+  color: var(--encre-faible);
+  flex: none;
+}
+
+.sommaire__titre {
+  position: relative;
+  font-family: var(--fonte-titre);
+  font-size: clamp(2rem, 8vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+/* Au survol, une bandelette rouge se pose sur le mot et l'inverse. */
+.sommaire__titre::after {
+  content: "";
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  top: 46%;
+  height: 0.2em;
+  translate: 0 -50%;
+  background: var(--sang);
+  mix-blend-mode: difference;
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 420ms var(--glisse), height 420ms var(--glisse);
+}
+
+.sommaire__lien:hover .sommaire__titre::after,
+.sommaire__lien:focus-visible .sommaire__titre::after {
+  scale: 1 1;
+  height: 0.62em;
+}
+
+.sommaire__lien[aria-current="page"] .sommaire__num {
+  color: var(--sang);
+}
+
+.sommaire__pied {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  max-width: var(--large);
+  margin-inline: auto;
+  width: 100%;
+  font-family: var(--fonte-registre);
+  font-size: 0.8rem;
+  color: var(--encre-faible);
+}
+
+.sommaire__pied a {
+  color: inherit;
+  text-decoration-color: var(--filet);
+  text-underline-offset: 0.3em;
+}
+
+.sommaire__pied a:hover {
+  color: var(--sang);
+}
+
+/* == 06  Strates ========================================================= */
+
+.strate {
+  position: relative;
+  max-width: var(--large);
+  margin-inline: auto;
+  padding: var(--souffle) var(--marge);
+  border-top: 1px solid var(--filet);
+}
+
+/* La bande qui balaie la section quand elle entre dans le champ.
+   Elle ne masque jamais le contenu : elle passe dessus, puis sort. */
+.js .strate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--gaze);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  translate: -110% 0;
+}
+
+.strate__titre {
+  font-size: clamp(1.9rem, 6vw, 4rem);
+  color: var(--iode-clair);
+  margin-bottom: clamp(1.6rem, 4vw, 3rem);
+}
+
+.strate__titre--suite {
+  margin-top: clamp(3rem, 8vw, 5rem);
+}
+
+.strate__suite {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+
+.lien-bande {
+  position: relative;
+  display: inline-block;
+  font-family: var(--fonte-registre);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.7rem 0;
+}
+
+.lien-bande::before {
+  content: "→ ";
+  color: var(--sang);
+}
+
+.lien-bande::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.35rem;
+  height: 2px;
+  background: currentColor;
+  transform-origin: right;
+  scale: 1 1;
+  transition: scale 340ms var(--glisse);
+}
+
+.lien-bande:hover::after,
+.lien-bande:focus-visible::after {
+  transform-origin: left;
+  scale: 0 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .strate > :not(.bandelettes) {
+    opacity: 0;
+    translate: 0 1.2rem;
+    transition: opacity 620ms var(--glisse) 160ms, translate 620ms var(--glisse) 160ms;
+  }
+
+  .js .strate.est-decolle > :not(.bandelettes) {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .js .strate.est-decolle::before {
+    animation: balayer 900ms var(--pose) both;
+  }
+
+  @keyframes balayer {
+    0% {
+      translate: -110% 0;
+    }
+    100% {
+      translate: 110% 0;
+    }
+  }
+}
+
+/* == 07  Ouverture (accueil) ============================================= */
+
+.ouverture {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: min(92svh, 60rem);
+  padding: clamp(3rem, 10vh, 7rem) var(--marge) var(--marge);
+  max-width: var(--large);
+  margin-inline: auto;
+}
+
+.ouverture__plaque {
+  position: relative;
+  isolation: isolate;
+}
+
+.titre-panse {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(2rem, 11vw, 9.5rem);
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+}
+
+.titre-panse__ligne--accent {
+  color: var(--iode-clair);
+}
+
+.ouverture .bandelettes {
+  z-index: 2;
+}
+
+.ouverture__accroche {
+  max-width: var(--colonne);
+  margin-top: clamp(2rem, 6vh, 4rem);
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  line-height: 1.4;
+  color: var(--encre-faible);
+}
+
+.ouverture__indice {
+  margin-top: clamp(2rem, 6vh, 4rem);
+  font-family: var(--fonte-registre);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+/* == 08  Entrées de page ================================================= */
+
+.entree {
+  position: relative;
+  isolation: isolate;
+  max-width: var(--large);
+  margin-inline: auto;
+  padding: clamp(3.5rem, 12vh, 8rem) var(--marge) clamp(3rem, 8vh, 5rem);
+}
+
+.entree__num {
+  font-family: var(--fonte-registre);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--sang);
+  margin-bottom: 1.4rem;
+}
+
+.entree__titre {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(2.6rem, 11vw, 8.5rem);
+  line-height: 0.85;
+}
+
+.entree__chapo {
+  position: relative;
+  z-index: 1;
+  max-width: var(--colonne);
+  margin-top: clamp(1.8rem, 5vh, 3rem);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--encre-faible);
+}
+
+.bandelettes--entree {
+  z-index: 2;
+}
+
+/* == 09  Blocs de contenu ================================================ */
+
+/* -- Les trois énoncés de l'accueil ------------------------------------- */
+
+.geste {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+@media (min-width: 55rem) {
+  .geste {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.geste__enonce {
+  position: relative;
+  padding-top: 1.4rem;
+  border-top: 2px solid var(--iode);
+  font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+}
+
+/* -- Aperçu des expositions --------------------------------------------- */
+
+.apercu {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+@media (min-width: 55rem) {
+  .apercu {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.apercu__lien {
+  display: grid;
+  gap: 0.9rem;
+  text-decoration: none;
+}
+
+.apercu__meta,
+.apercu__titre,
+.apercu__chapo {
+  display: block;
+}
+
+.apercu__meta {
+  font-family: var(--fonte-registre);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+.apercu__titre {
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.apercu__chapo {
+  color: var(--encre-faible);
+}
+
+.apercu__lien:hover .apercu__titre,
+.apercu__lien:focus-visible .apercu__titre {
+  color: var(--sang);
+}
+
+/* -- Clichés ------------------------------------------------------------- */
+
+.cliche {
+  display: block;
+  overflow: clip;
+  border: 1px solid var(--filet);
+}
+
+.cliche__img {
+  width: 100%;
+  height: auto;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Le noir et blanc jusqu'au survol : la couleur n'arrive qu'au contact.
+   Réservé aux pointeurs fins — au doigt, il n'y a pas de survol, donc les
+   photos resteraient grises pour toujours. */
+@media (hover: hover) and (pointer: fine) {
+  .cliche__img {
+    filter: grayscale(1) contrast(1.08);
+    transition: filter 520ms var(--glisse), scale 700ms var(--glisse);
+  }
+
+  a:hover .cliche__img,
+  a:focus-visible .cliche__img,
+  .dossier:hover .cliche__img {
+    filter: grayscale(0) contrast(1);
+    scale: 1.015;
+  }
+}
+
+/* -- Compteur de l'accueil ---------------------------------------------- */
+
+.compte {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--filet);
+}
+
+@media (min-width: 46rem) {
+  .compte {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.compte__poste {
+  padding-top: 1.4rem;
+}
+
+.compte__poste dt {
+  font-family: var(--fonte-registre);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+.compte__poste dd {
+  margin: 0.6rem 0 0;
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.9rem, 5vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+}
+
+.compte__note,
+.appel__texte {
+  max-width: var(--colonne);
+  margin-top: clamp(2rem, 5vw, 3rem);
+  color: var(--encre-faible);
+}
+
+.appel__adresse {
+  margin-top: 1.2rem;
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.2rem, 4vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
+
+.appel__adresse a {
+  text-decoration: none;
+  color: var(--iode-clair);
+}
+
+.appel__adresse a:hover {
+  color: var(--sang);
+}
+
+/* -- Récit & compresse --------------------------------------------------- */
+
+.recit {
+  display: grid;
+  gap: 1.4rem;
+  max-width: 52rem;
+}
+
+.recit__tete {
+  font-size: clamp(1.25rem, 2.6vw, 1.85rem);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+.recit strong {
+  color: var(--gaze);
+}
+
+/* La compresse : un bloc de gaze posé sur le corps noir. */
+.compresse {
+  position: relative;
+  padding: clamp(1.8rem, 5vw, 3.5rem);
+  background: var(--gaze);
+  color: var(--encre-sur-gaze);
+  max-width: 54rem;
+}
+
+.compresse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgb(8 8 8 / 5%) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(0deg, rgb(8 8 8 / 4%) 0 1px, transparent 1px 6px);
+}
+
+.compresse__titre {
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+  color: var(--sang-sombre);
+  margin-bottom: 1.4rem;
+}
+
+.compresse p {
+  position: relative;
+  z-index: 1;
+  max-width: 44rem;
+}
+
+.compresse a {
+  color: var(--iode);
+}
+
+.siege__adresse {
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.siege__precision {
+  margin-top: 0.9rem;
+  font-family: var(--fonte-registre);
+  font-size: 0.82rem;
+  color: var(--encre-faible-sur-gaze);
+}
+
+/* -- Dossiers de projet -------------------------------------------------- */
+
+.dossier {
+  position: relative;
+  display: grid;
+  gap: clamp(1.8rem, 5vw, 3.5rem);
+  max-width: var(--large);
+  margin-inline: auto;
+  padding: var(--souffle) var(--marge);
+  border-top: 1px solid var(--filet);
+  scroll-margin-top: 6rem;
+}
+
+@media (min-width: 60rem) {
+  .dossier {
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .dossier__fiche {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+.dossier__num {
+  font-family: var(--fonte-registre);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--sang);
+}
+
+.dossier__surtitre {
+  margin-top: 1.2rem;
+  font-family: var(--fonte-registre);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+.dossier__titre {
+  margin-top: 0.8rem;
+  font-size: clamp(1.9rem, 5.5vw, 3.4rem);
+  letter-spacing: -0.05em;
+}
+
+.dossier__lieu {
+  margin-top: 0.9rem;
+  color: var(--iode-clair);
+  font-weight: 700;
+}
+
+.dossier__chapo {
+  margin-top: 1.6rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+}
+
+.dossier__texte {
+  margin-top: 1.1rem;
+  color: var(--encre-faible);
+}
+
+.etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.8rem;
+}
+
+.etiquettes li {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--filet);
+  font-family: var(--fonte-registre);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+/* -- Registre légal ------------------------------------------------------ */
+
+.registre {
+  display: grid;
+  gap: clamp(2.5rem, 7vw, 5rem);
+}
+
+@media (min-width: 60rem) {
+  .registre {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  }
+}
+
+/* Les titres des colonnes se mesurent à leur colonne, pas à l'écran :
+   sans ça, « Gouvernance » déborde de la colonne de droite. */
+.registre__colonne {
+  container-type: inline-size;
+}
+
+.registre__colonne .strate__titre {
+  font-size: clamp(1.7rem, 11cqi, 4rem);
+}
+
+.registre__note {
+  max-width: 34rem;
+  margin-bottom: 1.6rem;
+  color: var(--encre-faible);
+}
+
+.fiche__ligne {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--filet);
+}
+
+@media (min-width: 40rem) {
+  .fiche__ligne {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+}
+
+.fiche dt {
+  font-family: var(--fonte-registre);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+.fiche dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.fiche__code {
+  font-family: var(--fonte-registre);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: var(--iode-clair);
+}
+
+.fiche a {
+  color: var(--iode-clair);
+  text-underline-offset: 0.25em;
+}
+
+.fiche a:hover {
+  color: var(--sang);
+}
+
+.bureau__membre {
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--filet);
+}
+
+.bureau__nom {
+  display: block;
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.bureau__role {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: var(--fonte-registre);
+  font-size: 0.78rem;
+  color: var(--encre-faible);
+}
+
+/* == 10  Radiographie budgétaire ========================================= */
+
+/* Les comptes sont lus comme une planche de radio : le tableau reste la
+   source de vérité (chaque poste porte son libellé, son montant et sa part),
+   la jauge n'est qu'un doublon visuel de la part. Une seule couleur par
+   planche : la longueur encode la grandeur, jamais la teinte. */
+
+.radio__chapo {
+  max-width: var(--colonne);
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  color: var(--encre-faible);
+}
+
+.planche {
+  margin: 0 0 clamp(3rem, 7vw, 5rem);
+  padding: clamp(1.4rem, 4vw, 2.5rem);
+  border: 1px solid var(--filet);
+  background:
+    radial-gradient(120% 140% at 12% 0%, rgb(23 66 255 / 10%), transparent 55%),
+    rgb(255 255 255 / 2%);
+  /* Teinte de la planche : bleu iode pour les recettes, os pour les dépenses. */
+  --trace: var(--iode-clair);
+}
+
+.planche--2 {
+  --trace: var(--gaze-ombre);
+  background:
+    radial-gradient(120% 140% at 88% 0%, rgb(241 238 231 / 7%), transparent 55%),
+    rgb(255 255 255 / 2%);
+}
+
+.planche__titre {
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 1.6rem;
+}
+
+.planche__table th,
+.planche__table td {
+  padding: 1rem 0.5rem;
+  text-align: left;
+  vertical-align: baseline;
+  border-bottom: 1px solid var(--filet);
+}
+
+.planche__table thead th {
+  padding-top: 0;
+  font-family: var(--fonte-registre);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+.planche__table .nombre {
+  text-align: right;
+  font-family: var(--fonte-registre);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.planche__table .part {
+  color: var(--encre-faible);
+  width: 5.5rem;
+}
+
+.poste {
+  font-weight: 400;
+  padding-right: 1.5rem;
+}
+
+.poste__nom {
+  display: block;
+}
+
+/* La jauge : une bande lumineuse sous le libellé. */
+.jauge {
+  display: block;
+  margin-top: 0.7rem;
+  height: 8px;
+  background: rgb(241 238 231 / 8%);
+}
+
+.jauge__os {
+  display: block;
+  height: 100%;
+  width: calc(var(--part) * 1%);
+  background: var(--trace);
+  border-radius: 0 4px 4px 0;
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .est-decolle .jauge__os {
+    animation: pousser 900ms var(--glisse) both;
+  }
+
+  @keyframes pousser {
+    from {
+      scale: 0 1;
+    }
+    to {
+      scale: 1 1;
+    }
+  }
+}
+
+.planche__ligne:hover {
+  background: rgb(241 238 231 / 4%);
+}
+
+.planche__ligne:hover .jauge__os {
+  background: var(--sang);
+}
+
+.planche__total th,
+.planche__total td {
+  padding-top: 1.4rem;
+  border-bottom: 0;
+  border-top: 2px solid var(--gaze);
+  font-weight: 900;
+}
+
+.radio__note {
+  max-width: var(--colonne);
+  color: var(--encre-faible);
+  font-size: 0.95rem;
+}
+
+/* -- Coordonnées --------------------------------------------------------- */
+
+.adresses {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--filet);
+}
+
+@media (min-width: 46rem) {
+  .adresses {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.adresse {
+  padding-top: 1.4rem;
+}
+
+.adresse__etiquette {
+  font-family: var(--fonte-registre);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--encre-faible);
+}
+
+.adresse__valeur {
+  margin-top: 0.7rem;
+  font-family: var(--fonte-titre);
+  font-size: clamp(1.15rem, 3vw, 2rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.adresse__valeur a {
+  text-decoration: none;
+  background-image: linear-gradient(var(--sang), var(--sang));
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 320ms var(--glisse), color 220ms;
+}
+
+.adresse__valeur a:hover,
+.adresse__valeur a:focus-visible {
+  background-size: 100% 100%;
+  color: var(--noir);
+}
+
+/* == 11  Pied de page ==================================================== */
+
+.pied {
+  position: relative;
+  margin-top: var(--souffle);
+  padding: clamp(3rem, 8vw, 5rem) var(--marge);
+  background: var(--gaze);
+  color: var(--encre-sur-gaze);
+}
+
+.pied::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgb(8 8 8 / 4%) 0 1px, transparent 1px 7px);
+}
+
+.pied__haut,
+.pied__legal {
+  position: relative;
+  z-index: 1;
+  max-width: var(--large);
+  margin-inline: auto;
+}
+
+.pied__haut {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+@media (min-width: 46rem) {
+  .pied__haut {
+    grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pied__nom {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  color: var(--noir);
+}
+
+.pied__mail {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-weight: 800;
+  color: var(--sang-sombre);
+  text-underline-offset: 0.3em;
+  overflow-wrap: anywhere;
+}
+
+.pied h3 {
+  font-family: var(--fonte-registre);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--encre-faible-sur-gaze);
+  margin-bottom: 1rem;
+}
+
+.pied__nav li,
+.pied__joindre li {
+  padding: 0.4rem 0;
+}
+
+.pied__nav a,
+.pied__joindre a {
+  font-weight: 700;
+  text-underline-offset: 0.25em;
+  text-decoration-color: rgb(8 8 8 / 30%);
+  overflow-wrap: anywhere;
+}
+
+.pied__nav a:hover,
+.pied__joindre a:hover,
+.pied__mail:hover {
+  color: var(--iode);
+}
+
+.pied__nav a[aria-current="page"] {
+  color: var(--sang-sombre);
+}
+
+.pied__legal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--filet-sur-gaze);
+  font-family: var(--fonte-registre);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--encre-faible-sur-gaze);
+}
+
+/* == 12  Transitions de page ============================================= */
+
+/* Le passage d'une page à l'autre est un coup de bande : la nouvelle page
+   arrive par la droite pendant que l'ancienne s'efface. Purement natif, et
+   simplement ignoré par les navigateurs qui ne le gèrent pas encore. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: sortir 320ms var(--pose) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: entrer 420ms var(--pose) both;
+  }
+
+  @keyframes sortir {
+    to {
+      opacity: 0;
+      translate: -3vw 0;
+    }
+  }
+
+  @keyframes entrer {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
+
+/* == 13  Retraits ======================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js .strate::before {
+    display: none;
+  }
+}
+
+/* Contraste forcé (Windows) : on retire tout ce qui repose sur le mélange. */
+@media (forced-colors: active) {
+  .grain,
+  .bandelettes,
+  .bandelette,
+  .js .strate::before {
+    display: none;
+  }
+
+  .jauge__os {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+
+  .compresse,
+  .pied {
+    border: 1px solid CanvasText;
+  }
+}
+
+@media print {
+  .grain,
+  .bandelettes,
+  .sommaire,
+  .entete,
+  .evitement {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .compresse,
+  .pied {
+    background: none;
+    color: #000;
+  }
+
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
+}

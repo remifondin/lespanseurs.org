@@ -1,0 +1,29 @@
+---
+layout: layouts/base.njk
+permalink: /404.html
+titre: Page introuvable
+description: "Cette page n'existe pas ou plus sur lespanseurs.org."
+eleventyExcludeFromCollections: true
+---
+
+<section class="entree entree--404" aria-labelledby="t-page">
+  <p class="entree__num" aria-hidden="true">404</p>
+  <h1 class="entree__titre" id="t-page">Rien<br>sous la<br>bande.</h1>
+  <p class="entree__chapo">Cette adresse ne mène à aucune page. Elle a peut-être changé, ou le lien s'est abîmé en route.</p>
+  <div class="bandelettes bandelettes--entree" aria-hidden="true">
+    <i class="bandelette bandelette--sang" style="--y: 40%; --h: 7%; --x: 12%; --r: .5deg; --retard: 0ms"></i>
+    <i class="bandelette" style="--y: 70%; --h: 9%; --x: -18%; --r: -.4deg; --retard: 120ms"></i>
+  </div>
+</section>
+
+<section class="strate">
+  <h2 class="strate__titre">Où aller</h2>
+  <ul class="adresses">
+    {%- for lien in nav %}
+    <li class="adresse">
+      <p class="adresse__etiquette">{{ lien.num }}</p>
+      <p class="adresse__valeur"><a href="{{ lien.url }}">{{ lien.titre }}</a></p>
+    </li>
+    {%- endfor %}
+  </ul>
+</section>

@@ -1,0 +1,48 @@
+---
+layout: layouts/base.njk
+permalink: /contact.html
+titre: Contact
+description: "Écrire aux Panseurs : remi.fondin@lespanseurs.org, contact.lespanseurs@gmail.com, 06 17 59 28 52, Instagram @lespanseurs."
+---
+
+<section class="entree" aria-labelledby="t-page">
+  <p class="entree__num" aria-hidden="true">05</p>
+  <h1 class="entree__titre" id="t-page">Contactez-<br>nous</h1>
+  <p class="entree__chapo">N'hésitez pas à nous écrire pour toute demande d'information, partenariat ou projet de médiation culturelle.</p>
+  <div class="bandelettes bandelettes--entree" aria-hidden="true">
+    <i class="bandelette bandelette--sang" style="--y: 44%; --h: 6%; --x: -16%; --r: .4deg; --retard: 0ms"></i>
+    <i class="bandelette" style="--y: 78%; --h: 8%; --x: 20%; --r: -.5deg; --retard: 120ms"></i>
+  </div>
+</section>
+
+<section class="strate strate--adresses" aria-labelledby="t-adresses">
+  <h2 class="visuellement-cache" id="t-adresses">Nos coordonnées</h2>
+
+  <ul class="adresses">
+    <li class="adresse">
+      <p class="adresse__etiquette">E-mail — Administration</p>
+      <p class="adresse__valeur"><a href="mailto:{{ site.emails.administration }}">{{ site.emails.administration }}</a></p>
+    </li>
+    <li class="adresse">
+      <p class="adresse__etiquette">E-mail — Contact général</p>
+      <p class="adresse__valeur"><a href="mailto:{{ site.emails.general }}">{{ site.emails.general }}</a></p>
+    </li>
+    <li class="adresse">
+      <p class="adresse__etiquette">Téléphone</p>
+      <p class="adresse__valeur"><a href="tel:{{ site.telephoneLien }}">{{ site.telephone }}</a></p>
+    </li>
+    <li class="adresse">
+      <p class="adresse__etiquette">Réseaux sociaux</p>
+      <p class="adresse__valeur"><a href="{{ site.instagram.url }}" rel="noopener">Instagram {{ site.instagram.pseudo }}<span aria-hidden="true"> ↗</span></a></p>
+    </li>
+  </ul>
+</section>
+
+<section class="strate strate--siege" aria-labelledby="t-siege">
+  <div class="compresse">
+    <h2 class="compresse__titre" id="t-siege">Siège social</h2>
+    <p class="siege__adresse">{{ site.legal.adresse }}</p>
+    <p class="siege__precision">{{ site.nomLegal }} — {{ site.legal.forme }}. RNA {{ site.legal.rna }}, SIREN {{ site.legal.siren }}.</p>
+  </div>
+  <p class="strate__suite"><a class="lien-bande" href="/transparence.html">Nos informations légales complètes</a></p>
+</section>

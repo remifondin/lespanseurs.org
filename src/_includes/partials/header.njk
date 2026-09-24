@@ -1,0 +1,35 @@
+<header class="entete">
+  <a class="marque" href="/">
+    <span class="marque__mot">Les</span><span class="marque__mot marque__mot--panse">Panseurs</span>
+  </a>
+
+  <nav class="entete__liens" aria-label="Navigation principale">
+    {%- for lien in nav %}
+    <a href="{{ lien.url }}"{% if page.url == lien.url %} aria-current="page"{% endif %}>{{ lien.court }}</a>
+    {%- endfor %}
+  </nav>
+
+  <details class="sommaire" name="sommaire">
+    <summary class="sommaire__bouton">
+      <span class="sommaire__mot sommaire__mot--ferme">Sommaire</span>
+      <span class="sommaire__mot sommaire__mot--ouvert">Fermer</span>
+      <span class="sommaire__trait" aria-hidden="true"></span>
+    </summary>
+
+    <div class="sommaire__panneau">
+      <nav class="sommaire__nav" aria-label="Sommaire du site">
+        {%- for lien in nav %}
+        <a class="sommaire__lien" href="{{ lien.url }}" style="--rang: {{ loop.index0 }}"{% if page.url == lien.url %} aria-current="page"{% endif %}>
+          <span class="sommaire__num">{{ lien.num }}</span>
+          <span class="sommaire__titre">{{ lien.titre }}</span>
+        </a>
+        {%- endfor %}
+      </nav>
+
+      <p class="sommaire__pied">
+        <a href="mailto:{{ site.emails.administration }}">{{ site.emails.administration }}</a>
+        <a href="{{ site.instagram.url }}" rel="noopener">Instagram {{ site.instagram.pseudo }}</a>
+      </p>
+    </div>
+  </details>
+</header>

@@ -1,0 +1,26 @@
+{
+  "annee": 2026,
+  "chapo": "L’intégralité des ressources collectées (dons, cotisations, recettes solidaires) est directement réinvestie dans la production artistique et l'accueil des publics.",
+  "note": "L'association tient un registre rigoureux de l'ensemble des dons (22 enregistrés sur 2026) et émet des reçus fiscaux conformément à la réglementation.",
+  "dons": 22,
+  "recettes": {
+    "titre": "Synthèse budgétaire (Recettes)",
+    "colonne": "Poste de recettes / ressources",
+    "totalLabel": "Total des ressources mobilisées",
+    "lignes": [
+      { "poste": "Dons des particuliers (HelloAsso & directs)", "montant": 2150.0 },
+      { "poste": "Recettes solidaires (buvette solidaire & cartes)", "montant": 113.45 },
+      { "poste": "Participations & concours divers", "montant": 60.0 }
+    ]
+  },
+  "depenses": {
+    "titre": "Répartition des dépenses par programme",
+    "colonne": "Affectation des dépenses",
+    "totalLabel": "Total des dépenses engagées",
+    "lignes": [
+      { "poste": "Production & scénographie — Expo Kiosque Citoyen", "montant": 1055.78 },
+      { "poste": "Production & événementiel — Expo Chapelle Saint-Lazare", "montant": 716.84 },
+      { "poste": "Frais de structure & fonctionnement (assurances, web)", "montant": 448.8 }
+    ]
+  }
+}

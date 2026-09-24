@@ -1,0 +1,120 @@
+---
+layout: layouts/base.njk
+permalink: /transparence.html
+titre: Transparence & Légal
+description: "Identité légale, gouvernance et comptes 2026 des Panseurs : RNA W751280345, SIREN 994 308 385, recettes et dépenses détaillées ligne par ligne."
+---
+
+<section class="entree" aria-labelledby="t-page">
+  <p class="entree__num" aria-hidden="true">04</p>
+  <h1 class="entree__titre" id="t-page">Informations<br>Officielles<br>&amp; Transparence</h1>
+  <p class="entree__chapo">Tout ce qui nous engage est public : notre identité légale, qui nous dirige, et l'euro près de ce que nous recevons et dépensons.</p>
+  <div class="bandelettes bandelettes--entree" aria-hidden="true">
+    <i class="bandelette" style="--y: 24%; --h: 7%; --x: -8%; --r: -.35deg; --retard: 0ms"></i>
+    <i class="bandelette bandelette--iode" style="--y: 61%; --h: 5%; --x: 26%; --r: .45deg; --retard: 120ms"></i>
+  </div>
+</section>
+
+<section class="strate strate--registre" aria-labelledby="t-identite">
+  <div class="registre">
+    <div class="registre__colonne">
+      <h2 class="strate__titre" id="t-identite">Identité Légale</h2>
+      <dl class="fiche">
+        <div class="fiche__ligne">
+          <dt>Nom officiel de l'organisation</dt>
+          <dd>{{ site.nomLegal }}</dd>
+        </div>
+        <div class="fiche__ligne">
+          <dt>Forme juridique</dt>
+          <dd>{{ site.legal.forme }}</dd>
+        </div>
+        <div class="fiche__ligne">
+          <dt>Numéro d'identification (Charity ID / RNA)</dt>
+          <dd class="fiche__code">{{ site.legal.rna }}</dd>
+        </div>
+        <div class="fiche__ligne">
+          <dt>Numéro SIREN</dt>
+          <dd class="fiche__code">{{ site.legal.siren }}</dd>
+        </div>
+        <div class="fiche__ligne">
+          <dt>Adresse physique (siège social)</dt>
+          <dd>{{ site.legal.adresse }}</dd>
+        </div>
+        <div class="fiche__ligne">
+          <dt>Déclaration officielle (JOAFE)</dt>
+          <dd><a href="{{ site.legal.joafe }}" rel="noopener">Consulter l'enregistrement officiel<span aria-hidden="true"> ↗</span></a></dd>
+        </div>
+      </dl>
+
+      <h2 class="strate__titre strate__titre--suite">Détails du domaine</h2>
+      <p class="registre__note">Site officiel de l'association {{ site.nomLegal }} pour la diffusion de ses activités d'intérêt général.</p>
+      <dl class="fiche">
+        <div class="fiche__ligne">
+          <dt>Nom de domaine principal</dt>
+          <dd class="fiche__code">{{ site.domaine }}</dd>
+        </div>
+        <div class="fiche__ligne">
+          <dt>Bureau d'enregistrement</dt>
+          <dd>{{ site.registrar }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="registre__colonne">
+      <h2 class="strate__titre" id="t-gouvernance">Gouvernance</h2>
+      <ul class="bureau">
+        {%- for membre in gouvernance %}
+        <li class="bureau__membre">
+          <span class="bureau__nom">{{ membre.nom }}</span>
+          <span class="bureau__role">{{ membre.role }}</span>
+        </li>
+        {%- endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="strate strate--radio" aria-labelledby="t-finances">
+  <h2 class="strate__titre" id="t-finances">Transparence Financière {{ finances.annee }}</h2>
+  <p class="radio__chapo">{{ finances.chapo }}</p>
+
+  {%- for bloc in [finances.recettes, finances.depenses] %}
+  {%- set total = bloc.lignes | somme %}
+  <figure class="planche planche--{{ loop.index }}">
+    <figcaption class="planche__titre">{{ bloc.titre }}</figcaption>
+
+    <table class="planche__table">
+      <caption class="visuellement-cache">{{ bloc.titre }} de l'association {{ site.nomLegal }} pour l'année {{ finances.annee }}, en euros et en part du total.</caption>
+      <thead>
+        <tr>
+          <th scope="col">{{ bloc.colonne }}</th>
+          <th scope="col" class="nombre">Montant</th>
+          <th scope="col" class="nombre">Part</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for ligne in bloc.lignes %}
+        {%- set part = ligne.montant | part(total) %}
+        <tr class="planche__ligne">
+          <th scope="row" class="poste">
+            <span class="poste__nom">{{ ligne.poste }}</span>
+            <span class="jauge" aria-hidden="true"><span class="jauge__os" style="--part: {{ part }}"></span></span>
+          </th>
+          <td class="nombre">{{ ligne.montant | euros }}</td>
+          <td class="nombre part">{{ part | pourcent }}</td>
+        </tr>
+        {%- endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="planche__total">
+          <th scope="row">{{ bloc.totalLabel }}</th>
+          <td class="nombre">{{ total | euros }}</td>
+          <td class="nombre part">{{ 100 | pourcent }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </figure>
+  {%- endfor %}
+
+  <p class="radio__note"><em>Note : {{ finances.note }}</em></p>
+</section>

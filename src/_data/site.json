@@ -1,0 +1,27 @@
+{
+  "nom": "Les Panseurs",
+  "nomLegal": "LES PANSEURS",
+  "url": "https://lespanseurs.org",
+  "domaine": "lespanseurs.org",
+  "registrar": "Squarespace",
+  "accroche": "Structure artistique, culturelle et sociale engagée pour décloisonner les pratiques créatives et imaginer de nouvelles formes de médiation.",
+  "description": "Les Panseurs, association loi 1901 : expositions d'art contemporain pluridisciplinaires et ateliers de médiation avec les publics éloignés de l'offre culturelle.",
+  "emails": {
+    "administration": "remi.fondin@lespanseurs.org",
+    "general": "contact.lespanseurs@gmail.com"
+  },
+  "telephone": "06 17 59 28 52",
+  "telephoneLien": "+33617592852",
+  "instagram": {
+    "pseudo": "@lespanseurs",
+    "url": "https://www.instagram.com/lespanseurs/"
+  },
+  "legal": {
+    "forme": "Association loi 1901 à but non lucratif",
+    "rna": "W751280345",
+    "siren": "994 308 385",
+    "adresse": "4 boulevard Saint-Martin, 75010 Paris, France",
+    "adresseCourte": "4 bd Saint-Martin, 75010 Paris, France",
+    "joafe": "https://drive.google.com/file/d/1VwDBhvpmW7VIqrwOr_qGUoAMX7jN8gX_/view?usp=drivesdk"
+  }
+}
