@@ -514,7 +514,7 @@ table {
 .sommaire__titre {
   position: relative;
   font-family: var(--fonte-titre);
-  font-size: clamp(2rem, 8vw, 5.5rem);
+  font-size: clamp(1.75rem, 8vw, 5.5rem);
   font-weight: 900;
   letter-spacing: -0.05em;
   line-height: 0.92;
@@ -723,11 +723,16 @@ table {
 /* == 08  Entrées de page ================================================= */
 
 .entree {
-  position: relative;
-  isolation: isolate;
   max-width: var(--large);
   margin-inline: auto;
   padding: clamp(3.5rem, 12vh, 8rem) var(--marge) clamp(3rem, 8vh, 5rem);
+}
+
+/* Les bandelettes ne traversent que le titre : posées sur toute l'entrée,
+   elles rendaient le chapô illisible. */
+.entree__plaque {
+  position: relative;
+  isolation: isolate;
 }
 
 .entree__num {
@@ -741,7 +746,10 @@ table {
 .entree__titre {
   position: relative;
   z-index: 1;
-  font-size: clamp(2.6rem, 11vw, 8.5rem);
+  /* La borne basse tient compte de la largeur réelle du grotesque
+     (0,676 em par caractère) : au-delà, « INFORMATIONS » et
+     « TRANSPARENCE » débordent sur un écran de 320 px. */
+  font-size: clamp(2rem, 11vw, 8.5rem);
   line-height: 0.85;
 }
 

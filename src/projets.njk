@@ -7,13 +7,15 @@ description: "Les expositions des Panseurs : « Home isn’t always a place, is 
 {% from "partials/photo.njk" import cliche with context %}
 
 <section class="entree" aria-labelledby="t-page">
-  <p class="entree__num" aria-hidden="true">03</p>
-  <h1 class="entree__titre" id="t-page">Nos Projets<br>&amp; Programmes</h1>
-  <p class="entree__chapo">Découvrez les réalisations de l'association et le travail que nous menons actuellement sur le terrain.</p>
-  <div class="bandelettes bandelettes--entree" aria-hidden="true">
-    <i class="bandelette bandelette--sang" style="--y: 36%; --h: 6%; --x: 18%; --r: .5deg; --retard: 0ms"></i>
-    <i class="bandelette" style="--y: 72%; --h: 9%; --x: -12%; --r: -.5deg; --retard: 120ms"></i>
+  <div class="entree__plaque">
+    <p class="entree__num" aria-hidden="true">03</p>
+    <h1 class="entree__titre" id="t-page">Nos Projets<br>&amp; Programmes</h1>
+    <div class="bandelettes bandelettes--entree" aria-hidden="true">
+      <i class="bandelette bandelette--sang" style="--y: 36%; --h: 6%; --x: 18%; --r: .5deg; --retard: 0ms"></i>
+      <i class="bandelette" style="--y: 72%; --h: 9%; --x: -12%; --r: -.5deg; --retard: 120ms"></i>
+    </div>
   </div>
+  <p class="entree__chapo">Découvrez les réalisations de l'association et le travail que nous menons actuellement sur le terrain.</p>
 </section>
 
 {%- for projet in projets %}
